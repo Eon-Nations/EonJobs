@@ -1,0 +1,21 @@
+# Prices for the jobs
+actions:
+  - kill
+  - smelt
+  - craft
+  - break
+  - place
+  - breed
+  - shear
+  - milk
+  - fish
+
+action-material-mapping:
+  kill: "diamond_sword"
+  smelt: "furnace"
+  craft: "crafting_table"
+  break: "diamond_pickaxe"
+  place: "diamond_axe"
+  breed: "wheat"
+  shear: "shears"
+  milk: "milk_bucket"
