@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Eonjobs</name>
+    <name>EonJobs</name>
 
     <description>Jobs for Eon Nations. Split into a new plugin</description>
     <properties>

@@ -1,8 +1,16 @@
-name: Eonjobs
+name: EonJobs
 version: '${project.version}'
-main: com.eonnations.eonjobs.Eonjobs
+main: com.eonnations.eonjobs.EonJobs
 api-version: 1.18
 prefix: EonJobs
 depend: [ Vault, LuckPerms ]
 authors: [ Squid ]
 description: Jobs for Eon Nations. Split into a new plugin
+commands:
+  givejobexp:
+    description: Cool command
+    permission: eoncommands.givejobexp
+  jobmenu:
+    description: Jobs Menu
+  jobstats:
+    description: Stats information about your job
