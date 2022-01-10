@@ -1,6 +1,6 @@
 name: Eonjobs
 version: '${project.version}'
-main: com.eonnations.eonjobs.Eonjobs
+main: com.eonnations.eonjobs.EonJobs
 api-version: 1.18
 prefix: EonJobs
 depend: [ Vault, LuckPerms ]
