@@ -31,8 +31,9 @@ public class WorldInteractListener implements Listener {
     EonJobs plugin;
     JobsManager jobsManager;
 
-    public WorldInteractListener(EonJobs plugin) {
+    public WorldInteractListener(EonJobs plugin, JobsManager jobsManager) {
         this.plugin = plugin;
+        this.jobsManager = jobsManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 

@@ -32,7 +32,7 @@ public final class EonJobs extends JavaPlugin {
         new JobStatsCommand(this, jobsManager);
         new JobsEventListener(this, jobFileManager, eco);
         new JoinListener(this, jobsManager);
-        new WorldInteractListener(this);
+        new WorldInteractListener(this, jobsManager);
     }
 
     @Override
