@@ -31,7 +31,7 @@ public class JobsEventListener implements Listener {
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
         if (e.getWorld().getName().equals("spawn_void")) return;
-        if (e.getJob().getEnumJob().equals(Jobs.MINER) &&
+        if (e.getJob() != null && e.getJob().getEnumJob().equals(Jobs.MINER) &&
         e.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
             return;
         }
