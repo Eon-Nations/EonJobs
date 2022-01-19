@@ -20,6 +20,7 @@ public class GiveExpCommand implements CommandExecutor {
     public GiveExpCommand(EonJobs plugin, JobsManager jobsManager) {
         this.plugin = plugin;
         this.jobsManager = jobsManager;
+        plugin.getCommand("givejobexp").setExecutor(this);
     }
 
 

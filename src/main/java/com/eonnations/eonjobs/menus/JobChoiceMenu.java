@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
@@ -91,6 +92,14 @@ public class JobChoiceMenu implements Listener {
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onConfirmationInventoryClose(InventoryCloseEvent e) {
+        if (e.getInventory().equals(confirmationInv)) {
+            confirmationMap.remove(e.getPlayer().getUniqueId());
+            e.getPlayer().sendMessage(Utils.getPrefix("jobs").append(Component.text("Left confirmation screen")));
         }
     }
 
