@@ -3,6 +3,7 @@ package com.eonnations.eonjobs.events;
 import com.eonnations.eonjobs.jobs.Job;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -12,14 +13,14 @@ public class JobBreakEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     Player p;
-    Material material;
+    Block block;
     World world;
     Job job;
 
-    public JobBreakEvent(Player p, Material material, World world, Job job) {
+    public JobBreakEvent(Player p, Block block, World world, Job job) {
         super(true);
         this.p = p;
-        this.material = material;
+        this.block = block;
         this.world = world;
         this.job = job;
     }
@@ -28,8 +29,8 @@ public class JobBreakEvent extends Event {
         return p;
     }
 
-    public Material getMaterial() {
-        return material;
+    public Block getBlock() {
+        return block;
     }
 
     public World getWorld() {

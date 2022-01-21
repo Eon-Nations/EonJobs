@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,12 +31,19 @@ public class JobsEventListener implements Listener {
 
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
+        // To prevent abuse of blocked building in spawn
         if (e.getWorld().getName().equals("spawn_void")) return;
+        // To prevent remining of ores
         if (e.getJob() != null && e.getJob().getEnumJob().equals(Jobs.MINER) &&
         e.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
             return;
         }
-        sendJobReward(e.getPlayer(), "break", e.getJob(), e.getMaterial().name(), 1);
+        // For the farmer job, the crop has to be fully grown in order to break it
+        if (e.getBlock().getBlockData() instanceof Ageable ageable) {
+            if (ageable.getAge() != ageable.getMaximumAge())
+                return;
+        }
+        sendJobReward(e.getPlayer(), "break", e.getJob(), e.getBlock().getType().name(), 1);
     }
 
     @EventHandler

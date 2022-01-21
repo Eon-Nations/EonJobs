@@ -39,13 +39,12 @@ public class WorldInteractListener implements Listener {
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
-        Material material = e.getBlock().getType();
         Player p = e.getPlayer();
         World world = e.getPlayer().getWorld();
         Job job = jobsManager.getPlayerJob(p.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                Bukkit.getPluginManager().callEvent(new JobBreakEvent(p, material, world, job)));
+                Bukkit.getPluginManager().callEvent(new JobBreakEvent(p, e.getBlock(), world, job)));
     }
 
     @EventHandler
