@@ -39,7 +39,8 @@ public class JobsEventListener implements Listener {
             return;
         }
         // For the farmer job, the crop has to be fully grown in order to break it
-        if (e.getBlock().getBlockData() instanceof Ageable ageable) {
+        if (e.getJob() != null && e.getJob().getEnumJob().equals(Jobs.FARMER)
+        && e.getBlock().getBlockData() instanceof Ageable ageable) {
             if (ageable.getAge() != ageable.getMaximumAge())
                 return;
         }
