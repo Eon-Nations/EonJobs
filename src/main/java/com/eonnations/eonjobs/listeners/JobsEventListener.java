@@ -31,9 +31,6 @@ public class JobsEventListener implements Listener {
 
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
-        plugin.getLogger().info("Before Checks: " + e.getPlayer().getName());
-        plugin.getLogger().info(" - Block Type: " + e.getBlock().getType().name());
-        plugin.getLogger().info(" - Job Type: " + e.getJob().getEnumJob().name());
         // To prevent abuse of blocked building in spawn
         if (e.getWorld().getName().equals("spawn_void")) return;
         // To prevent remining of ores
@@ -42,15 +39,10 @@ public class JobsEventListener implements Listener {
             return;
         }
         // For the farmer job, the crop has to be fully grown in order to break it
-        if (e.getJob() != null && e.getJob().getEnumJob().equals(Jobs.FARMER)
-        && e.getBlock().getBlockData() instanceof Ageable ageable) {
-            if (ageable.getAge() != ageable.getMaximumAge())
-                return;
+        if (e.getJob() != null && e.getJob().getEnumJob().equals(Jobs.FARMER) && e.getAge() == 0) {
+            return;
         }
-        plugin.getLogger().info("After Checks: " + e.getPlayer().getName());
-        plugin.getLogger().info(" - Block Type: " + e.getBlock().getType().name());
-        plugin.getLogger().info(" - Job Type: " + e.getJob().getEnumJob().name());
-        sendJobReward(e.getPlayer(), "break", e.getJob(), e.getBlock().getType().name(), 1);
+        sendJobReward(e.getPlayer(), "break", e.getJob(), e.getName(), 1);
     }
 
     @EventHandler

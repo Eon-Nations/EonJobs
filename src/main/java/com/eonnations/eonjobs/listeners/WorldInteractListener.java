@@ -7,6 +7,7 @@ import com.eonnations.eonjobs.jobs.JobsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -40,11 +41,20 @@ public class WorldInteractListener implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
         Player p = e.getPlayer();
+        int age = 0;
         World world = e.getPlayer().getWorld();
         Job job = jobsManager.getPlayerJob(p.getUniqueId());
 
+        if (e.getBlock().getBlockData() instanceof Ageable ageable) {
+            if (ageable.getAge() == ageable.getMaximumAge()) {
+                age = ageable.getAge();
+            }
+        }
+
+        // Since lambda expressions need an effective final variable to be passed into it
+        int finalAge = age;
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                Bukkit.getPluginManager().callEvent(new JobBreakEvent(p, e.getBlock(), world, job)));
+                Bukkit.getPluginManager().callEvent(new JobBreakEvent(p, finalAge, e.getBlock().getType().name(), world, job)));
     }
 
     @EventHandler
