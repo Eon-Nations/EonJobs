@@ -31,6 +31,9 @@ public class JobsEventListener implements Listener {
 
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
+        plugin.getLogger().info("Before Checks: " + e.getPlayer().getName());
+        plugin.getLogger().info(" - Block Type: " + e.getBlock().getType().name());
+        plugin.getLogger().info(" - Job Type: " + e.getJob().getEnumJob().name());
         // To prevent abuse of blocked building in spawn
         if (e.getWorld().getName().equals("spawn_void")) return;
         // To prevent remining of ores
@@ -44,6 +47,9 @@ public class JobsEventListener implements Listener {
             if (ageable.getAge() != ageable.getMaximumAge())
                 return;
         }
+        plugin.getLogger().info("After Checks: " + e.getPlayer().getName());
+        plugin.getLogger().info(" - Block Type: " + e.getBlock().getType().name());
+        plugin.getLogger().info(" - Job Type: " + e.getJob().getEnumJob().name());
         sendJobReward(e.getPlayer(), "break", e.getJob(), e.getBlock().getType().name(), 1);
     }
 
