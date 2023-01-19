@@ -173,7 +173,7 @@ public class WorldInteractListener implements Listener {
         };
     }
 
-    public int getAfterAmount(Player p, Material type) {
+    private int getAfterAmount(Player p, Material type) {
         int amount = 0;
         for (ItemStack item : p.getInventory().getContents()) {
             if (item != null && item.getType().equals(type)) {

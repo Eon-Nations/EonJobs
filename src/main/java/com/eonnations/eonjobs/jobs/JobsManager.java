@@ -1,72 +1,87 @@
 package com.eonnations.eonjobs.jobs;
 
 import com.eonnations.eonjobs.EonJobs;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.cacheddata.CachedMetaData;
-import net.luckperms.api.node.NodeType;
-import net.luckperms.api.node.types.MetaNode;
 import org.bukkit.entity.Player;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * A manager class for handling player jobs and experience using Jedis.
+ */
 public class JobsManager {
 
-    HashMap<UUID, Job> playerJobs;
-    LuckPerms luckPerms;
-    EonJobs plugin;
+    private final JedisPool jedisPool;
+    private final EonJobs plugin;
 
-    public JobsManager(EonJobs plugin, LuckPerms luckPerms) {
-        playerJobs = new HashMap<>();
-        this.luckPerms = luckPerms;
+    /**
+     * Constructs a new JobsManager with the given JedisPool and plugin.
+     *
+     * @param plugin the EonJobs plugin instance
+     */
+    public JobsManager(EonJobs plugin) {
+        this.jedisPool = setupPool();
         this.plugin = plugin;
     }
 
+    public JobsManager(JedisPool pool, EonJobs plugin) {
+        this.jedisPool = pool;
+        this.plugin = plugin;
+    }
+
+    /**
+     * Gets the player's job and experience based on their UUID
+     * @return the Job object of the player, Optional.empty() if not found
+     */
+    private JedisPool setupPool() {
+        String serverURL = Optional.ofNullable(plugin.getConfig().getString("redis-url")).orElse("redis://localhost:6709");
+        return new JedisPool(serverURL);
+    }
+
+    /**
+     * Gets the player's job and experience based on their UUID
+     * @param uuid player's UUID
+     * @return the Job object of the player, Optional.empty() if not found
+     */
     public Job getPlayerJob(UUID uuid) {
-        return playerJobs.get(uuid);
-    }
-
-    public List<UUID> getPlayersInJob(Jobs job) {
-        List<UUID> toReturn = new ArrayList<>();
-        for (UUID uuid : playerJobs.keySet()) {
-            if (playerJobs.get(uuid).getEnumJob().equals(job)) {
-                toReturn.add(uuid);
+        try (Jedis jedis = jedisPool.getResource()) {
+            Map<String, String> jobData = jedis.hgetAll("playerJobs:" + uuid.toString());
+            if (jobData.isEmpty()) {
+                return Job.defaultJob();
             }
-        }
-        return toReturn;
-    }
-
-    public void addPlayerToJob(UUID uuid, Jobs enumJob) {
-        Job job = new Job(enumJob);
-        playerJobs.put(uuid, job);
-    }
-
-    public void loadPlayer(Player p) {
-        CachedMetaData metaData = luckPerms.getPlayerAdapter(Player.class).getMetaData(p);
-        String jobString = metaData.getMetaValue("job");
-        if (jobString != null) {
-            Job job = Job.fromString(jobString);
-            playerJobs.put(p.getUniqueId(), job);
+            String job = jobData.get("job");
+            double experience = Double.parseDouble(jobData.get("experience"));
+            return new Job(Jobs.valueOf(job), experience);
         }
     }
 
-    public void savePlayer(Player p) {
-        luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
-            Job job = playerJobs.remove(p.getUniqueId());
-            MetaNode node = MetaNode.builder("job", job.toString()).build();
-            user.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals("job")));
-            user.data().add(node);
-        });
+    /**
+     * Adds the player to the given job with the given experience
+     * @param uuid player's UUID
+     * @param enumJob the job to add the player to
+     * @param experience the experience of the player in the job
+     */
+    public void addPlayerToJob(UUID uuid, Jobs enumJob, double experience) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            Map<String, String> jobData = new HashMap<>();
+            jobData.put("job", enumJob.name());
+            jobData.put("experience", Double.toString(experience));
+            jedis.hmset("playerJobs:" + uuid.toString(), jobData);
+        }
     }
 
+    /**
+     * Check if a player has a job
+     * @param p player
+     * @return true if the player has a job, false otherwise
+     */
     public boolean hasJob(Player p) {
-        if (playerJobs.containsKey(p.getUniqueId()))
-            return true;
-        else {
-            CachedMetaData metaData = luckPerms.getPlayerAdapter(Player.class).getMetaData(p);
-            return metaData.getMetaValue("job") != null;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists("playerJobs:" + p.getUniqueId().toString());
         }
     }
 }

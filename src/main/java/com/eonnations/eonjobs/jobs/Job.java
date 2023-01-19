@@ -43,5 +43,9 @@ public class Job {
         double exp = Double.parseDouble(stringArr[1]);
         return new Job(enumJob, exp);
     }
+
+    public static Job defaultJob() {
+        return new Job(Jobs.MINER, 0.0);
+    }
 }
 

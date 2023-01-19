@@ -82,7 +82,7 @@ public class JobChoiceMenu implements Listener {
                 case EMERALD_BLOCK -> {
                     Jobs enumJob = confirmationMap.remove(p.getUniqueId());
                     p.closeInventory();
-                    jobsManager.addPlayerToJob(p.getUniqueId(), enumJob);
+                    jobsManager.addPlayerToJob(p.getUniqueId(), enumJob, 0.0);
                     p.sendMessage(Component.text("Joined job: " + StringUtils.capitalize(enumJob.name().toLowerCase())));
                 }
                 case REDSTONE_BLOCK -> {

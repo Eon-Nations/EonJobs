@@ -31,13 +31,6 @@ public class JobStatsCommand implements CommandExecutor {
         Player p = (Player) commandSender;
         Job job = jobsManager.getPlayerJob(p.getUniqueId());
 
-        if (job == null) {
-            p.sendMessage(Utils.getPrefix("nations")
-                    .append(Component.text("Enter /jobsmenu to join a job")
-                            .color(TextColor.color(160, 160, 160))));
-            return true;
-        }
-
         TextColor color = TextColor.color(160, 160, 160);
 
         p.sendMessage(Utils.getPrefix("nations"));
